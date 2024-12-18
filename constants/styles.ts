@@ -37,11 +37,23 @@ const globalStyles = StyleSheet.create({
   row: {
     flexDirection: "row",
   },
+  flex: {
+    flex: 1,
+  },
   justifyCenter: {
     justifyContent: "center",
   },
   alignCenter: {
     alignItems: "center",
+  },
+  justifyBetween: {
+    justifyContent: "space-between",
+  },
+  justifyEnd: {
+    justifyContent: "flex-end",
+  },
+  paddXs: {
+    padding: 2,
   },
   paddSm: {
     padding: 5,
@@ -51,6 +63,39 @@ const globalStyles = StyleSheet.create({
   },
   paddLg: {
     padding: 15,
+  },
+  paddXl: {
+    padding: 20,
+  },
+  padd2Xl: {
+    padding: 22,
+  },
+  padd3Xl: {
+    padding: 24,
+  },
+  paddXSm: {
+    paddingHorizontal: 5,
+  },
+  paddXMd: {
+    paddingHorizontal: 10,
+  },
+  paddXLg: {
+    paddingHorizontal: 15,
+  },
+  paddXXl: {
+    paddingHorizontal: 20,
+  },
+  paddYSm: {
+    paddingVertical: 5,
+  },
+  paddYMd: {
+    paddingVertical: 10,
+  },
+  paddYLg: {
+    paddingVertical: 15,
+  },
+  textCenter: {
+    textAlign: "center",
   },
 });
 

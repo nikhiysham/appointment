@@ -4,7 +4,7 @@ import { router } from "expo-router";
 import CustomButton from "@/components/CustomButton";
 import InputField from "@/components/InputField";
 import Text from "@/components/Text";
-import globalStyles from "../styles";
+import globalStyles from "../../constants/styles";
 
 const AppointmentForm = () => {
   const [email, setEmail] = useState<String>();

@@ -1,16 +1,42 @@
+import { colors } from "@/constants/colors";
 import React from "react";
-import { StyleSheet, Button, View } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 
 type ButtonProps = {
   title: string;
   color?: string;
+  containerStyles?: object;
+  textStyles?: object;
+  buttonStyles?: object;
   onPress: () => void;
+  disabled?: boolean;
 };
 
-const CustomButton = ({ title, color, onPress }: ButtonProps) => {
+const CustomButton = ({
+  title,
+  color,
+  containerStyles = {},
+  textStyles = {},
+  buttonStyles = {},
+  disabled = false,
+  onPress,
+}: ButtonProps) => {
   return (
-    <View style={styles.button}>
-      <Button onPress={onPress} title={title} color={color} />
+    <View style={containerStyles}>
+      <TouchableOpacity
+        onPress={onPress}
+        style={[
+          styles.button,
+          buttonStyles,
+          color && !disabled
+            ? { backgroundColor: color }
+            : { backgroundColor: colors.primary },
+          disabled && { backgroundColor: colors.secondary },
+        ]}
+        disabled={disabled}
+      >
+        <Text style={[styles.textStyles, textStyles]}>{title}</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -18,6 +44,11 @@ const CustomButton = ({ title, color, onPress }: ButtonProps) => {
 const styles = StyleSheet.create({
   button: {
     padding: 10,
+    borderRadius: 5,
+  },
+  textStyles: {
+    color: "white",
+    textAlign: "center",
   },
 });
 
