@@ -1,15 +1,38 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { View, StyleSheet, Text } from "react-native";
+import { View, StyleSheet, Text, Alert } from "react-native";
 import CustomButton from "@/components/CustomButton";
 import globalStyles from "../../constants/styles";
 import { router } from "expo-router";
 import { Rating } from "@kolking/react-native-rating";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useSQLiteContext } from "expo-sqlite";
 
 const RatingForm = () => {
+  // Hooks
+  const db = useSQLiteContext();
+
   // Variables
   const [rating, setRating] = useState(0);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    const userId = await AsyncStorage.getItem("USER_ID");
+    try {
+      const resp1 = await db.runAsync(
+        "INSERT INTO rating (value, user_id, created_at) VALUES (?,?,?)",
+        rating,
+        userId,
+        new Date().toISOString()
+      );
+      console.log("Insert rating response: ", resp1);
+      Alert.alert(
+        "SUCCESS",
+        "Your feedback has been successfully submitted.Thank you!"
+      );
+    } catch (e) {
+      if (e) {
+        Alert.alert("ERROR", e.toString());
+      }
+    }
     router.replace("/splash");
   };
 
@@ -30,8 +53,10 @@ const RatingForm = () => {
       <View style={globalStyles.paddSm} />
       <Text style={globalStyles.textMd}>
         Your appointment has been scheduled and system will notify an
-        administrator. Please rate us
+        administrator.
       </Text>
+      <View style={globalStyles.padd2Xl} />
+      <Text style={globalStyles.textMd}>How do you like our system?</Text>
       <View style={globalStyles.paddMd} />
       <View style={[globalStyles.row]}>
         <Rating size={40} rating={rating} onChange={handleChange} />

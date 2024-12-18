@@ -1,16 +1,11 @@
+import { Notifications } from "@/app/dashboard";
 import { colors } from "@/constants/colors";
 import globalStyles from "@/constants/styles";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 
-type Notification = {
-  id: number;
-  message: string;
-  status: string;
-};
-
 type NotificationProps = {
-  notifications: Notification[];
+  notifications: Notifications[];
 };
 
 const NotificationBanner = ({ notifications }: NotificationProps) => {

@@ -1,3 +1,4 @@
+// import "expo-dev-client";
 import React from "react";
 import { Stack } from "expo-router";
 import { SQLiteDatabase, SQLiteProvider } from "expo-sqlite";
@@ -62,10 +63,6 @@ export default function App() {
         <Stack.Screen
           name="appointment/rating"
           options={{ headerTitle: "Rating" }}
-        />
-        <Stack.Screen
-          name="appointment/list"
-          options={{ headerShown: false }}
         />
         <Stack.Screen
           name="appointment/[id]"

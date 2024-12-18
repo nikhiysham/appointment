@@ -19,8 +19,8 @@ export function SplashScreen() {
     const role = await AsyncStorage.getItem("ROLE");
     setHasLogin(isLogin == "1" ? true : false);
     setHasRole(role ?? "");
-
-    if (isLogin) {
+    // console.log("ROLE: ", role, isLogin);
+    if (isLogin == "1") {
       if (role == "superadmin") {
         return router.replace("/dashboard");
       } else {

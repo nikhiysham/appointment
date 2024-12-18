@@ -13,7 +13,7 @@ import NotificationBanner from "@/components/NotificationBanner";
 import { useSQLiteContext } from "expo-sqlite";
 import Logout from "@/components/Logout";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Appointment } from "../dashboard";
+import { Appointment, Notifications } from "../dashboard";
 
 const AppointmentForm = () => {
   // Hooks
@@ -24,15 +24,18 @@ const AppointmentForm = () => {
   const [patientPhone, setPatientPhone] = useState<string>();
   const [bookingReason, setBookingReason] = useState<string>();
   const [selectedDate, setSelectedDate] = useState<string>();
-  const [notifications, setNotifications] = useState<[]>();
+  const [notifications, setNotifications] = useState<Notifications[]>();
   const [times, setTimes] = useState<string[]>();
   const [time, setTime] = useState<string>();
   const [date, setDate] = useState<Date>();
-  const [meridian, setMeridian] = useState<string>("AM");
+  const [meridian, setMeridian] = useState<string>("am");
   const [appointments, setAppointments] = useState<Appointment[]>();
 
   // Variables
   const curDate = new Date();
+  const curDateStr = `${curDate.getFullYear()}-${
+    curDate.getMonth() + 1
+  }-${curDate.getDate()}`;
   const curTime = new Date().toLocaleTimeString([], {
     timeStyle: "short",
   });
@@ -48,6 +51,7 @@ const AppointmentForm = () => {
   const mdian = curTime.toString().split(" ")[1];
 
   useEffect(() => {
+    // eraseStorage();
     init();
     fetchNotification();
     fetchAppointments();
@@ -56,6 +60,10 @@ const AppointmentForm = () => {
   useEffect(() => {
     generateTime();
   }, [date]);
+
+  const eraseStorage = async () => {
+    await AsyncStorage.clear();
+  };
 
   const fetchNotification = async () => {
     const userId = await AsyncStorage.getItem("USER_ID");
@@ -66,7 +74,6 @@ const AppointmentForm = () => {
         userId
       );
 
-      console.log("#NOTI RESULT: ", results);
       setNotifications(results);
     } catch (e) {
       Alert.alert("Error", e?.toString());
@@ -83,18 +90,19 @@ const AppointmentForm = () => {
 
   const init = () => {
     // set default calendar to todays date
-    setSelectedDate(
-      `${curDate.getFullYear()}-${curDate.getMonth() + 1}-${curDate.getDate()}`
-    );
-    const getTime =
-      curTime.split(" ")[0] + " " + curTime.split(" ")[1].toUpperCase();
-    console.log("#GET TIME: ", getTime);
+    setSelectedDate(curDateStr);
+    if (curTime) {
+      const getTime = curTime.split(" ")[0] + " " + curTime.split(" ")[1];
+      setTime(getTime);
+    }
+
     setDate(isoDate);
-    setTime(getTime);
   };
 
   const generateTime = () => {
-    setMeridian(mdian.toUpperCase());
+    if (mdian) {
+      setMeridian(mdian);
+    }
 
     const genTimes = Array(12)
       .fill(12)
@@ -164,7 +172,7 @@ const AppointmentForm = () => {
 
   const handleSubmit = async () => {
     const isFormValid = validateForm();
-    console.log("#FORM VALID: ", isFormValid);
+
     if (isFormValid) {
       const userId = await AsyncStorage.getItem("USER_ID");
 
@@ -187,7 +195,7 @@ const AppointmentForm = () => {
           userId,
           new Date().toISOString()
         );
-        console.log(resp1, resp2);
+        // console.log(resp1, resp2);
       } catch (e) {
         if (e) {
           Alert.alert("ERROR", e.toString());
@@ -202,13 +210,9 @@ const AppointmentForm = () => {
     <ScrollView contentContainerStyle={globalStyles.paddLg}>
       <Logout />
       <View style={globalStyles.paddMd} />
-      {notifications && notifications.length > 0 && (
-        <NotificationBanner notifications={notifications} />
-      )}
-      {notifications && notifications.length > 0 && (
-        <View style={globalStyles.paddMd} />
-      )}
-      {appointments && appointments.length > 0 && (
+      {notifications && <NotificationBanner notifications={notifications} />}
+      {notifications && <View style={globalStyles.paddMd} />}
+      {appointments && (
         <UpcomingAppointment date="20-02-2020" appointments={appointments} />
       )}
       <View style={globalStyles.paddMd} />
@@ -263,6 +267,7 @@ const AppointmentForm = () => {
             console.log("SELECTED DATE:", day, selIsoDateTime);
             setDate(selIsoDateTime);
           }}
+          minDate={curDateStr}
           markedDates={{
             [selectedDate as string]: {
               selected: true,
@@ -287,7 +292,7 @@ const AppointmentForm = () => {
             placeholder="Select Appointment Time"
             style={styles.dropdown}
             onValueChange={(itemValue, itemIndex) => {
-              console.log("TIME: ", itemValue);
+              // console.log("TIME: ", itemValue);
               setTime(itemValue + " " + meridian);
             }}
           >
@@ -305,22 +310,22 @@ const AppointmentForm = () => {
             ]}
           >
             <CustomButton
-              onPress={() => setMeridian("AM")}
+              onPress={() => setMeridian("am")}
               title="AM"
               buttonStyles={{
                 borderTopRightRadius: 0,
                 borderBottomRightRadius: 0,
               }}
-              color={meridian == "AM" ? colors.primary : colors.secondary}
+              color={meridian == "am" ? colors.primary : colors.secondary}
             />
             <CustomButton
-              onPress={() => setMeridian("PM")}
+              onPress={() => setMeridian("pm")}
               title="PM"
               buttonStyles={{
                 borderTopLeftRadius: 0,
                 borderBottomLeftRadius: 0,
               }}
-              color={meridian == "PM" ? colors.primary : colors.secondary}
+              color={meridian == "pm" ? colors.primary : colors.secondary}
             />
           </View>
         </View>
